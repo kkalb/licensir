@@ -32,20 +32,12 @@ defmodule Licensir.Scanner do
     |> search_hex_metadata()
     |> search_file()
     |> Guesser.guess()
+    |> dbg()
   end
 
   @spec deps() :: list(Mix.Dep.t())
   defp deps() do
-    func = loaded_deps_func_name()
-    apply(Mix.Dep, func, [[]])
-  end
-
-  defp loaded_deps_func_name() do
-    if Keyword.has_key?(Mix.Dep.__info__(:functions), :load_on_environment) do
-      :load_on_environment
-    else
-      :loaded
-    end
+    Mix.Dep.load_and_cache()
   end
 
   defp to_struct(deps) when is_list(deps), do: Enum.map(deps, &to_struct/1)
@@ -61,7 +53,7 @@ defmodule Licensir.Scanner do
 
   defp filter_top_level(deps, opts) do
     if Keyword.get(opts, :top_level_only) do
-      Enum.filter(deps, &(&1.dep.top_level))
+      Enum.filter(deps, & &1.dep.top_level)
     else
       deps
     end
@@ -74,7 +66,8 @@ defmodule Licensir.Scanner do
   # Search in hex_metadata.config
   #
 
-  defp search_hex_metadata(licenses) when is_list(licenses), do: Enum.map(licenses, &search_hex_metadata/1)
+  defp search_hex_metadata(licenses) when is_list(licenses),
+    do: Enum.map(licenses, &search_hex_metadata/1)
 
   defp search_hex_metadata(%License{} = license) do
     Map.put(license, :hex_metadata, search_hex_metadata(license.dep))

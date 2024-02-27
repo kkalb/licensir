@@ -295,3 +295,12 @@ defmodule Licensir.TableRex.Table do
     end
   end
 end
+
+defmodule Licensir.TableRex.Error do
+  defexception message: "an example error has occurred"
+
+  @impl true
+  def exception(value) do
+    raise Licensir.TableRex.Error, message: value
+  end
+end

@@ -18,7 +18,7 @@ defmodule Licensir.ScannerTest do
   end
 
   test "can filter Licensir.TestApp's dependencies for top-level only" do
-    licenses = Licensir.Scanner.scan([top_level_only: true])
+    licenses = Licensir.Scanner.scan(top_level_only: true)
 
     assert has_license?(licenses, %{app: :dep_with_dep})
     refute has_license?(licenses, %{app: :dep_of_dep})
