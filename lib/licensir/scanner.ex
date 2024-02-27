@@ -32,7 +32,6 @@ defmodule Licensir.Scanner do
     |> search_hex_metadata()
     |> search_file()
     |> Guesser.guess()
-    |> dbg()
   end
 
   @spec deps() :: list(Mix.Dep.t())
